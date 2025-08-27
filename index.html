@@ -1,427 +1,143 @@
 <!DOCTYPE html>
-<html lang="no" data-theme="auto">
+<html lang="no">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Scan & Buy — Norge</title>
-  <meta name="color-scheme" content="light dark">
+  <title>Scan & Buy — Redningsmodus</title>
   <style>
-    /* ---------- THEME ---------- */
-    :root{
-      --bg:#0b1220;
-      --bg2:#0d1630;
-      --grad1:#0ea5e9; /* cyan */
-      --grad2:#6366f1; /* indigo */
-      --panel:#0f1b2c99;  /* glass */
-      --lift:#14243d;     /* panel base */
-      --ink:#e6e8ef;
-      --muted:#9aa7bf;
-      --line:#1f2b45;
-      --brand:#7cc3ff;
-      --accent:#22d3ee;
-      --radius:16px;
-      --shadow:0 10px 28px rgba(0,0,0,.45);
-    }
-    @media (prefers-color-scheme: light){
-      :root{
-        --bg:#f6f7fb; --bg2:#eef2ff;
-        --panel:#ffffffcc; --lift:#ffffff;
-        --ink:#0f172a; --muted:#667085; --line:#e6e8ef;
-        --brand:#1C5D99; --accent:#06b6d4;
-        --shadow:0 12px 30px rgba(16,24,40,.10);
-      }
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 80% -10%, #70b8ff22, transparent 60%),
-        radial-gradient(950px 520px at 0% -10%, #a78bfa22, transparent 55%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      font-family: ui-sans-serif, -apple-system, system-ui, Segoe UI, Roboto, Arial;
-    }
-    a{color:inherit; text-decoration:none}
-    .wrap{max-width:1100px; margin:0 auto; padding:24px}
-
-    /* ---------- HEADER / BRAND ---------- */
-    .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px}
-    .brand{display:flex; align-items:center; gap:10px}
-    .logo{
-      width:36px; height:36px; border-radius:10px;
-      background: radial-gradient(circle at 30% 30%, var(--accent), var(--grad1));
-      box-shadow:0 6px 20px rgba(34,211,238,.35), inset 0 0 18px #ffffff33;
-      display:flex; align-items:center; justify-content:center; color:#001;
-      font-weight:800;
-    }
-    .brandname{font-weight:700; letter-spacing:.2px}
-    .version{color:var(--muted); font-size:12px; border:1px solid var(--line); padding:4px 8px; border-radius:999px}
-
-    /* ---------- HERO ---------- */
-    .hero{
-      position:relative; overflow:hidden;
-      border:1px solid var(--line);
-      border-radius: calc(var(--radius) + 6px);
-      background:
-        radial-gradient(600px 280px at 85% -10%, #93c5fd33, transparent 60%),
-        linear-gradient(135deg, #101c33 0%, #0f1a2f 60%, #0e182b 100%);
-      padding:26px 20px;
-      box-shadow: var(--shadow);
-    }
-    @media (prefers-color-scheme: light){
-      .hero{
-        background:
-          radial-gradient(700px 300px at 85% -10%, #93c5fd55, transparent 60%),
-          linear-gradient(135deg, #f1f5ff 0%, #f7f9ff 50%, #ffffff 100%);
-      }
-    }
-    .hero h1{margin:0 0 6px; font-size:28px}
-    .hero p{margin:0; color:var(--muted)}
-    .badge{
-      display:inline-flex; gap:8px; align-items:center;
-      font-size:12px; padding:6px 10px; border-radius:999px;
-      background:#ffffff22; border:1px solid var(--line); backdrop-filter: blur(8px);
-    }
-    .heroRow{display:flex; gap:18px; align-items:center; justify-content:space-between}
-    .heroActions{display:flex; gap:10px; flex-wrap:wrap}
-
-    /* ---------- GRID & CARDS ---------- */
-    .grid{display:grid; grid-template-columns:1.25fr 1fr; gap:16px; margin-top:18px}
-    @media (max-width:980px){ .grid{grid-template-columns:1fr} }
-    .card{
-      background: linear-gradient(180deg, var(--panel), var(--panel));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      padding:16px; position:relative; overflow:hidden;
-      animation:fadeIn .4s ease both;
-    }
-    @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
-    h3{margin:4px 0 8px; font-size:18px}
-    .muted{color:var(--muted); font-size:14px}
-    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
-    .divider{height:1px; background:var(--line); margin:12px 0}
-    .hint{font-size:12px; color:var(--muted)}
-
-    /* ---------- CONTROLS ---------- */
-    button{
-      border:0; cursor:pointer; font-size:16px; padding:12px 16px;
-      border-radius:12px; transition: transform .05s ease, box-shadow .2s ease;
-    }
-    .btn-primary{ color:#fff; background:linear-gradient(135deg, var(--grad1), var(--grad2));
-      box-shadow:0 8px 22px rgba(99,102,241,.35) }
-    .btn-primary:active{ transform:translateY(1px) }
-    .btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--line) }
-    .btn-dash{ background:transparent; color:var(--ink); border:1px dashed var(--line) }
-    input{
-      width:100%; padding:12px 14px; border-radius:12px;
-      border:1px solid var(--line); background:transparent; color:var(--ink); font-size:16px
-    }
-
-    /* ---------- MEDIA ---------- */
-    video{width:100%; border-radius:14px; background:#000; display:none}
-
-    /* scan overlay */
-    .scan-frame{position:absolute; inset:0; pointer-events:none; display:none}
-    .scan-frame:before{
-      content:""; position:absolute; left:50%; top:50%; width:78%; max-width:620px; height:38%;
-      transform: translate(-50%,-50%);
-      border:2px solid #60a5fa; border-radius:14px; box-shadow:0 0 0 9999px rgba(0,0,0,.45) inset;
-    }
-
-    /* ---------- OFFERS / LISTS ---------- */
-    .offers{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-    @media (max-width:640px){ .offers{grid-template-columns:1fr} }
-    .offer{
-      display:flex; justify-content:space-between; align-items:center; gap:8px;
-      padding:12px; border:1px solid var(--line); border-radius:12px;
-      background: linear-gradient(180deg, var(--lift), transparent);
-    }
-
-    /* ---------- SKELETON ---------- */
-    .skeleton{ position:relative; overflow:hidden; background:#d9e1f022; border-radius:12px }
-    .skeleton:after{
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(90deg, transparent, #ffffff55, transparent);
-      animation: shine 1.2s infinite;
-    }
-    @keyframes shine{ from{transform: translateX(-100%)} to{transform: translateX(100%)} }
-    .skeleton-row{height:14px; margin:8px 0}
-
-    /* ---------- FOOTER ---------- */
-    footer{margin:18px 0 6px; display:flex; justify-content:space-between; align-items:center; color:var(--muted)}
-    .footlinks a{margin-left:12px; font-size:14px}
-    .toast{
-      position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
-      background:#111827ee; color:#fff; padding:10px 14px; border-radius:12px; font-size:14px;
-      box-shadow:var(--shadow); display:none; z-index:9999;
-    }
+    :root{--bg:#f6f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--brand:#1C5D99;--line:#e5e7eb}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:860px;margin:0 auto;padding:18px}
+    h1{margin:8px 0 4px} .muted{color:var(--muted)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input{flex:1;min-width:220px;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:16px}
+    button{padding:12px 16px;border:0;border-radius:10px;background:var(--brand);color:#fff;font-size:16px}
+    .btn-ghost{background:#e9f2fb;color:#0b2545}
+    .offer{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}
+    .chip{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+    .divider{height:1px;background:var(--line);margin:10px 0}
+    .error{background:#fee2e2;border:1px solid #fecaca;color:#7f1d1d;padding:10px;border-radius:10px}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo">S</div>
-        <div class="brandname">Scan&nbsp;&nbsp;<span style="opacity:.8">&</span>&nbsp;&nbsp;Buy</div>
+    <h1>🔧 Scan & Buy — Redningsmodus</h1>
+    <p class="muted">Hvis du ser dette, fungerer UI-en. Kamera er midlertidig av. Skriv inn strekkode eller bil for å teste.</p>
+
+    <div class="card">
+      <h3>1) Varer (strekkode, EAN/GTIN)</h3>
+      <div class="row">
+        <input id="ean" placeholder="F.eks. 7310865004703"/>
+        <button id="eanBtn">Hent info</button>
       </div>
-      <div class="version">Beta v0.2</div>
+      <div id="productArea" style="margin-top:10px"></div>
     </div>
 
-    <section class="hero">
-      <div class="heroRow">
-        <div>
-          <div class="badge">🇳🇴 Laget for Norge</div>
-          <h1>Skann strekkoder. Finn produktet. Se hvor du kan kjøpe.</h1>
-          <p>Bruk kameraet i nettleseren. Klikk butikk-knappene for dagens pris.</p>
-          <div class="heroActions" style="margin-top:12px">
-            <a href="#scan" class="btn-primary">📷 Start skanning</a>
-            <a href="#car" class="btn-ghost">🚗 Finn bil</a>
-          </div>
-        </div>
+    <div class="card">
+      <h3>2) Bil (skilt / VIN)</h3>
+      <div class="row">
+        <input id="car" placeholder="AB12345 eller 17-tegn VIN"/>
+        <button id="carBtn" class="btn-ghost">Søk</button>
       </div>
-    </section>
-
-    <div class="grid" id="scan">
-      <!-- PRODUCTS -->
-      <div class="card" id="productsCard">
-        <h3>1) Varer (strekkode)</h3>
-        <p class="muted">Trykk «Start kamera». Pek strekkoden i rammen. Virker best i Safari (iPhone) og Chrome (Android). Hvis ikke: «Skriv inn».</p>
-        <div class="row">
-          <button id="startScan" class="btn-primary">📷 Start kamera</button>
-          <button id="stopScan" class="btn-ghost" disabled>⛔ Stopp</button>
-          <button id="typeCode" class="btn-dash">⌨️ Skriv inn</button>
-        </div>
-        <div class="divider"></div>
-        <div style="position:relative">
-          <video id="preview" playsinline muted></video>
-          <div class="scan-frame" id="scanFrame"></div>
-        </div>
-        <div id="manualBox" class="row" style="display:none; margin-top:10px">
-          <input id="codeInput" placeholder="EAN/GTIN (f.eks. 7310865004703)"/>
-          <button id="codeGo" class="btn-ghost">Søk</button>
-        </div>
-
-        <div id="productArea" style="margin-top:12px">
-          <!-- skeleton placeholder -->
-          <div id="placeholder" style="display:none">
-            <div class="skeleton" style="height:160px; border-radius:14px"></div>
-            <div class="skeleton-row skeleton" style="width:60%"></div>
-            <div class="skeleton-row skeleton" style="width:40%"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARS -->
-      <div class="card" id="car">
-        <h3>2) Bil (skilt / VIN)</h3>
-        <p class="muted">Skriv registreringsnummer (AB12345) eller VIN (17 tegn). Klikk videre til markedsplasser for dagens pris.</p>
-        <div class="row">
-          <input id="carInput" placeholder="AB12345 eller WVWZZZ1KZHW000001"/>
-          <button id="carSearch" class="btn-primary">🔎 Søk</button>
-        </div>
-        <div id="carArea" style="margin-top:12px"></div>
-      </div>
+      <div id="carArea" style="margin-top:10px"></div>
     </div>
 
-    <footer>
-      <div>© Scan & Buy • Bygget for enkel prissjekk</div>
-      <div class="footlinks">
-        <a href="#scan">Skann</a>
-        <a href="#car">Bil</a>
-      </div>
-    </footer>
-
-    <div class="toast" id="toast">Melding</div>
+    <div class="card">
+      <h3>Status</h3>
+      <div id="status" class="muted">Klar</div>
+    </div>
   </div>
 
-  <!-- ZXing fallback (for browsers without BarcodeDetector) -->
-  <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
   <script>
-    /* ---------- HELPERS ---------- */
-    const $ = s => document.querySelector(s);
-    const toast = (msg, ms=2200)=>{ const t=$('#toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', ms); };
+    const WORKER_URL = 'https://scanbuy-api.fwh479zypd.workers.dev/api/price'; // <-- CHANGE THIS
 
-    const shops = (q)=>[
-      {name:'Google Shopping', url:`https://www.google.com/search?tbm=shop&q=${q}`},
-      {name:'Elkjøp', url:`https://www.elkjop.no/search?q=${q}`},
-      {name:'Power', url:`https://www.power.no/search/?q=${q}`},
-      {name:'Komplett', url:`https://www.komplett.no/search?q=${q}`},
-      {name:'Obs', url:`https://nettbutikk.coop.no/sok?q=${q}`},
-      {name:'Prisjakt', url:`https://www.prisjakt.no/s?k=${q}`},
-    ];
+    function shops(q){
+      const e = encodeURIComponent(q);
+      return [
+        {name:'Google Shopping', url:`https://www.google.com/search?tbm=shop&q=${e}`},
+        {name:'Elkjøp', url:`https://www.elkjop.no/search?q=${e}`},
+        {name:'Power', url:`https://www.power.no/search/?q=${e}`},
+        {name:'Komplett', url:`https://www.komplett.no/search?q=${e}`},
+        {name:'Obs', url:`https://nettbutikk.coop.no/sok?q=${e}`},
+        {name:'Prisjakt', url:`https://www.prisjakt.no/s?k=${e}`}
+      ];
+    }
 
-    const looksLikeVin = s => /^[A-HJ-NPR-Z0-9]{17}$/.test((s||'').trim().toUpperCase());
-    const looksLikeNorPlate = s => /^[A-Z]{2}\d{4,5}$/.test((s||'').trim().toUpperCase().replace(/\s+/g,''));
+    function setStatus(msg, isErr=false){
+      const box = document.getElementById('status');
+      box.className = isErr ? 'error' : 'muted';
+      box.textContent = msg;
+    }
 
-    /* ---------- PRODUCT RENDER ---------- */
-    function renderProduct(data, barcode){
-      const area = $('#productArea');
-      $('#placeholder').style.display='none';
-
-      if (!data || data.status !== 1){
-        area.innerHTML = `
-          <div class="card" style="background:#422006aa; border-color:#f59e0b">
-            Fant ikke produkt for <strong>${barcode}</strong>.
-            <div class="muted">Tips: prøv igjen, eller søk i butikkene under.</div>
-          </div>`;
-        return;
+    async function fetchPrice(ean){
+      setStatus('Henter fra Worker…');
+      try{
+        const r = await fetch(`${WORKER_URL}?ean=${encodeURIComponent(ean)}`);
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        const data = await r.json();
+        setStatus('Ferdig. Viste resultat under.');
+        renderProduct(data, ean);
+      }catch(err){
+        setStatus('Feil: '+err.message, true);
       }
-      const p = data.product || {};
-      const title = p.product_name || p.generic_name || 'Uten navn';
-      const brand = p.brands || '';
-      const img = p.image_front_url || p.image_url || '';
-      const query = encodeURIComponent([brand, title].filter(Boolean).join(' ') || barcode);
+    }
 
-      const links = shops(query).map(s=>`
-        <a class="offer" href="${s.url}" target="_blank" rel="noopener">
+    function renderProduct(apiData, barcode){
+      const area = document.getElementById('productArea');
+      const p = apiData.product || {};
+      const title = p.title || 'Uten navn';
+      const brand = p.brand || '';
+      const img = p.image || '';
+      const offers = (apiData.offers||[]).slice().sort((a,b)=>(a.price??1e12)-(b.price??1e12));
+      const links = apiData.links || shops([brand,title].filter(Boolean).join(' ')||barcode);
+      const priceList = offers.length ? offers.map(o=>`
+        <a class="offer" target="_blank" rel="noopener" href="${o.url}">
+          <div><strong>${o.merchant}</strong></div>
+          <div><strong>${(o.price).toLocaleString('no-NO')} ${o.currency||'NOK'}</strong></div>
+        </a>`).join('') : '<div class="muted">Ingen direkte priser ennå.</div>';
+      const linkList = links.map(s=>`
+        <a class="offer" target="_blank" rel="noopener" href="${s.url}">
           <div><strong>${s.name}</strong></div><div>Åpne →</div>
         </a>`).join('');
-
       area.innerHTML = `
-        <div class="card" style="padding:0">
-          <div style="display:grid; grid-template-columns: 2fr 1fr; gap:0">
-            <div style="padding:16px">
-              <div style="font-weight:700; font-size:19px; letter-spacing:.2px">${title}</div>
-              ${brand ? `<div class="hint" style="margin-top:6px">Merke: <strong>${brand}</strong></div>` : ''}
-              <div class="muted" style="margin-top:8px">Strekkode: ${barcode}</div>
-              <div class="divider"></div>
-              <div style="font-weight:600; margin:6px 0 8px">Butikker (klikk for dagens pris)</div>
-              <div class="offers">${links}</div>
-              <div class="divider"></div>
-              <div class="muted">Kilde: Open Food Facts (live). Pris vises på butikk-siden.</div>
-            </div>
-            <div style="padding:16px; border-left:1px solid var(--line)">
-              <div style="height:220px; border-radius:12px; border:1px solid var(--line);
-                          background:linear-gradient(180deg, #0f1b2c55, #0f1b2c22); display:flex; align-items:center; justify-content:center">
-                ${img ? `<img src="${img}" alt="Produktbilde" style="max-height:200px; max-width:100%; object-fit:contain">` : '<span class="muted">Ingen bilde</span>'}
-              </div>
-            </div>
-          </div>
+        <div class="card">
+          <div><strong>${title}</strong> ${brand?`<span class="chip">Merke: ${brand}</span>`:''}</div>
+          <div class="muted">Strekkode: ${barcode}</div>
+          <div class="divider"></div>
+          <div><strong>Priser</strong></div>
+          ${priceList}
+          <div class="divider"></div>
+          <div><strong>Butikker (åpne for dagens pris)</strong></div>
+          ${linkList}
+          ${img?`<div class="divider"></div><img alt="Produkt" src="${img}" style="max-width:100%; border-radius:10px; border:1px solid var(--line)"/>`:''}
         </div>`;
     }
 
-    /* ---------- CAR RENDER ---------- */
-    function renderCarCard(input){
-      const q = (input||'').trim().toUpperCase();
-      const area = $('#carArea');
-      if (!q){ area.innerHTML=''; return; }
-      const tag = looksLikeVin(q) ? 'VIN ✔' : (looksLikeNorPlate(q) ? 'Norsk regnr ✔' : 'Ukjent format (går fint)');
+    function renderCar(query){
+      const q = (query||'').trim().toUpperCase();
+      const area = document.getElementById('carArea');
+      if(!q){ area.innerHTML=''; return; }
       const cards = [
         {name:'FINN biler', url:`https://www.finn.no/car/used/search.html?q=${encodeURIComponent(q)}`},
         {name:'Google bilsøk', url:`https://www.google.com/search?q=${encodeURIComponent(q+' bruktbil pris')}`},
         {name:'Autodb', url:`https://www.autodb.no/search?query=${encodeURIComponent(q)}`}
-      ].map(s=>`<a class="offer" href="${s.url}" target="_blank" rel="noopener"><div><strong>${s.name}</strong></div><div>Åpne →</div></a>`).join('');
-
-      area.innerHTML = `
-        <div class="card">
-          <div style="font-weight:700">Søk etter bil</div>
-          <div class="muted" style="margin-top:6px">Du skrev: <strong>${q}</strong> • <span class="hint">${tag}</span></div>
-          <div class="divider"></div>
-          <div style="font-weight:600; margin-bottom:8px">Markedsplasser (live priser)</div>
-          <div class="offers">${cards}</div>
-          <div class="divider"></div>
-          <div class="muted">Tips: For eksakte data (modell/år/km) legger vi senere til en liten «sky-hjelper»/partner-API.</div>
-        </div>`;
+      ].map(s=>`<a class="offer" target="_blank" rel="noopener" href="${s.url}">
+          <div><strong>${s.name}</strong></div><div>Åpne →</div></a>`).join('');
+      area.innerHTML = `<div class="card">${cards}</div>`;
     }
 
-    /* ---------- CAMERA & SCAN ---------- */
-    const startBtn = $('#startScan');
-    const stopBtn  = $('#stopScan');
-    const typeBtn  = $('#typeCode');
-    const manual   = $('#manualBox');
-    const codeIn   = $('#codeInput');
-    const codeGo   = $('#codeGo');
-    const video    = $('#preview');
-    const frame    = $('#scanFrame');
-
-    let stream=null, scanning=false, timer=null;
-
-    async function stopCamera(){
-      scanning=false;
-      if (timer){ clearInterval(timer); timer=null; }
-      if (stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
-      video.srcObject=null; video.style.display='none'; frame.style.display='none';
-      stopBtn.disabled=true;
-    }
-    async function startCamera(){
-      await stopCamera();
-      try{
-        stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-        video.srcObject = stream; await video.play();
-        video.style.display='block'; frame.style.display='block';
-        stopBtn.disabled=false;
-      }catch(e){ toast('Kunne ikke åpne kamera. Sjekk tillatelse og https.'); }
-    }
-
-    async function fetchOFF(barcode){
-  const WORKER = 'https://finder-api.fwh479zypd.workers.dev'; // <-- your Worker URL
-  document.getElementById('placeholder').style.display='block';
-  try{
-    const r = await fetch(`${WORKER}?ean=${encodeURIComponent(barcode)}`);
-    const data = await r.json();
-    document.getElementById('placeholder').style.display='none';
-    renderProductWithOffers(data, barcode);
-  }catch(e){
-    document.getElementById('placeholder').style.display='none';
-    alert('Feil ved henting av priser.');
-  }
-}
-      }
-    }
-
-    async function tryBarcodeDetector(){
-      if (!('BarcodeDetector' in window)) return false;
-      const detector = new window.BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
-      scanning = true;
-      const tick = async ()=>{
-        if (!scanning) return;
-        try{
-          const codes = await detector.detect(video);
-          if (codes && codes.length){
-            const raw = codes[0].rawValue || '';
-            if (raw){ scanning=false; await stopCamera(); await fetchOFF(raw); return; }
-          }
-        }catch(_){}
-        requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-      return true;
-    }
-
-    async function tryZXing(){
-      const canvas=document.createElement('canvas'); const ctx=canvas.getContext('2d');
-      scanning=true;
-      timer=setInterval(async ()=>{
-        if (!scanning || !video.videoWidth) return;
-        canvas.width=video.videoWidth; canvas.height=video.videoHeight;
-        ctx.drawImage(video,0,0,canvas.width,canvas.height);
-        try{
-          const src = new ZXing.HTMLCanvasElementLuminanceSource(canvas);
-          const bmp = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(src));
-          const res = ZXing.BrowserMultiFormatReader.decodeBitmap(bmp);
-          const code = res && res.getText ? res.getText() : null;
-          if (code){ scanning=false; await stopCamera(); await fetchOFF(code); }
-        }catch(_e){ /* keep trying */ }
-      }, 220);
-    }
-
-    startBtn.addEventListener('click', async ()=>{
-      manual.style.display='none';
-      await startCamera();
-      const ok = await tryBarcodeDetector();
-      if (!ok) await tryZXing();
+    document.getElementById('eanBtn').addEventListener('click', ()=>{
+      const v = document.getElementById('ean').value.trim();
+      if(!v){ setStatus('Skriv inn en strekkode', true); return; }
+      fetchPrice(v);
     });
-    stopBtn.addEventListener('click', stopCamera);
-    typeBtn.addEventListener('click', ()=>{ manual.style.display = manual.style.display==='none' ? 'flex' : 'none'; });
-    codeGo.addEventListener('click', ()=>{ const c=codeIn.value.trim(); if(c){ fetchOFF(c); } });
-
-    /* ---------- CAR SEARCH ---------- */
-    $('#carSearch').addEventListener('click', ()=>{
-      const q = $('#carInput').value;
-      renderCarCard(q);
+    document.getElementById('carBtn').addEventListener('click', ()=>{
+      renderCar(document.getElementById('car').value);
     });
+
+    // smoke test
+    setStatus('Klar (skriv inn 7310865004703 for test)');
   </script>
 </body>
 </html>
