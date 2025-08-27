@@ -7,115 +7,192 @@
   <meta name="color-scheme" content="light dark">
   <style>
     :root{
-      --bg:#0b1220; --bg2:#0e1a30; --panel:#111c31cc; --ink:#e6e8ef; --muted:#9aa7bf; --line:#20304b;
-      --grad1:#22d3ee; --grad2:#6366f1; --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.45)
+      --bg:#fff9fb; --bg2:#fdf2f8; --panel:#ffffffee; --ink:#3a2b2f; --muted:#7a6b6f; --line:#f0dfe5;
+      --accent1:#f472b6; --accent2:#a78bfa; --leaf:#86efac; --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.08)
     }
-    @media (prefers-color-scheme: light){
-      :root{ --bg:#f6f7fb; --bg2:#eef2ff; --panel:#ffffffcc; --ink:#0f172a; --muted:#667085; --line:#e6e8ef; --shadow:0 12px 30px rgba(16,24,40,.10) }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#1b1220; --bg2:#221427; --panel:#2b1c29ee; --ink:#fde8ef; --muted:#f1cfe1; --line:#653a53;
+             --accent1:#f472b6; --accent2:#a78bfa; --leaf:#4ade80; --shadow:0 12px 30px rgba(0,0,0,.35) }
     }
     *{box-sizing:border-box}
-    body{margin:0;color:var(--ink);
-      background: radial-gradient(1200px 600px at 80% -10%, #70b8ff22, transparent 60%),
-                  radial-gradient(950px 520px at 0% -10%, #a78bfa22, transparent 55%),
-                  linear-gradient(180deg, var(--bg), var(--bg2));
-      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Arial;}
+    body{
+      margin:0; color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, #f472b622, transparent 60%),
+        radial-gradient(900px 500px at -10% 0%, #a78bfa22, transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Arial;
+    }
     a{color:inherit;text-decoration:none}
-    .wrap{max-width:820px;margin:0 auto;padding:20px}
+    .wrap{max-width:860px;margin:0 auto;padding:20px}
     .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
     .brand{display:flex;gap:10px;align-items:center}
-    .logo{width:36px;height:36px;border-radius:10px;background:radial-gradient(circle at 30% 30%, var(--grad1), var(--grad2));
-      box-shadow:0 6px 20px rgba(34,211,238,.35), inset 0 0 18px #ffffff33; display:flex;align-items:center;justify-content:center;font-weight:800;color:#001}
-    .hero{border:1px solid var(--line);border-radius:22px;background:
-      radial-gradient(600px 280px at 85% -10%, #93c5fd33, transparent 60%),
-      linear-gradient(135deg, #101c33 0%, #0f1a2f 60%, #0e182b 100%);padding:24px;box-shadow:var(--shadow)}
-    @media (prefers-color-scheme: light){.hero{background:
-      radial-gradient(700px 300px at 85% -10%, #93c5fd55, transparent 60%),
-      linear-gradient(135deg, #f1f5ff 0%, #f7f9ff 50%, #ffffff 100%)}}
-    .badge{display:inline-flex;gap:8px;align-items:center;font-size:12px;padding:6px 10px;border-radius:999px;background:#ffffff22;border:1px solid var(--line);backdrop-filter:blur(8px)}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
-    h1{margin:0 0 6px} h2{margin:6px 0 10px;font-size:20px}
-    .muted{color:var(--muted);font-size:14px}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    input[type=file]{flex:1;min-width:220px;padding:10px;border:1px dashed var(--line);border-radius:12px;background:transparent;color:var(--ink)}
-    button{border:0;border-radius:12px;padding:12px 16px;font-size:16px;cursor:pointer}
-    .btn{background:linear-gradient(135deg,var(--grad1),var(--grad2));color:#fff;box-shadow:0 8px 22px rgba(99,102,241,.35)}
-    .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
-    .offer{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#0f1b2c55,transparent)}
-    @media (prefers-color-scheme: light){.offer{background:#ffffffaa}}
-    .divider{height:1px;background:var(--line);margin:10px 0}
-    .imgbox{display:flex;align-items:center;justify-content:center;min-height:220px;border:1px solid var(--line);border-radius:12px;background:#00000022;overflow:hidden}
-    .preview{max-width:100%;max-height:360px;object-fit:contain}
-    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111827ee;color:#fff;padding:10px 14px;border-radius:12px;font-size:14px;display:none;z-index:9999}
+    .logo{width:40px;height:40px;border-radius:12px;background:
+      radial-gradient(circle at 35% 35%, var(--leaf), var(--accent1));
+      display:flex;align-items:center;justify-content:center; font-weight:900; color:#fff; text-shadow:0 1px 2px #0003}
+    .hero{
+      border:1px solid var(--line); border-radius:24px; padding:20px;
+      background:
+        radial-gradient(600px 260px at 90% -10%, #a78bfa44, transparent 60%),
+        linear-gradient(135deg, #fff7fb 0%, #fff 60%, #fff 100%);
+      box-shadow: var(--shadow);
+    }
+    @media (prefers-color-scheme: dark){
+      .hero{ background:
+        radial-gradient(600px 260px at 90% -10%, #a78bfa44, transparent 60%),
+        linear-gradient(135deg, #221427 0%, #2b1c29 60%, #2b1c29 100%); }
+    }
+    h1{margin:0 0 6px} .muted{color:var(--muted)}
+    .tabs{display:flex; gap:10px; margin-top:12px}
+    .tab{border:1px solid var(--line); border-radius:999px; padding:8px 12px; cursor:pointer; background:var(--panel)}
+    .tab.active{background:linear-gradient(135deg, var(--accent1), var(--accent2)); color:#fff; border-color:transparent}
+    .card{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px; box-shadow:var(--shadow); margin-top:14px}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    input[type=file]{flex:1; min-width:220px; padding:10px; border:1px dashed var(--line); border-radius:12px; background:transparent; color:var(--ink)}
+    button{border:0; border-radius:12px; padding:12px 16px; font-size:16px; cursor:pointer}
+    .btn{background:linear-gradient(135deg, var(--accent1), var(--accent2)); color:#fff; box-shadow:0 8px 22px #0002}
+    .btn-ghost{background:transparent; color:var(--ink); border:1px solid var(--line)}
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width:760px){ .grid2{grid-template-columns:1fr} }
+    .frame{position:relative; border:1px dashed var(--line); border-radius:14px; overflow:hidden; background:#00000010; min-height:260px; display:flex; align-items:center; justify-content:center}
+    video, img{max-width:100%; max-height:420px; object-fit:contain}
+    .overlay{position:absolute; inset:0; pointer-events:none; box-shadow:0 0 0 9999px #0000; border:2px dashed #ffffff88; border-radius:14px}
+    .offer{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#ffffffcc}
+    @media (prefers-color-scheme: dark){ .offer{background:#00000022} }
+    .divider{height:1px; background:var(--line); margin:10px 0}
     .chip{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+    .toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:#111827ee; color:#fff; padding:10px 14px; border-radius:12px; display:none; z-index:9999}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="top">
-      <div class="brand"><div class="logo">F</div><strong>Finder</strong></div>
-      <div class="badge">🌸 Blomster</div>
+      <div class="brand"><div class="logo">🌸</div><strong>Finder</strong></div>
+      <div class="chip">Lett & blomstret</div>
     </div>
 
     <section class="hero">
-      <h1>Identifiser en blomst</h1>
-      <p class="muted">Ta et klart bilde i godt lys. Vi foreslår arter, og du kan åpne Google/Wikipedia for å sjekke.</p>
+      <h1>Identifiser blomster</h1>
+      <p class="muted">Bruk <strong>Kamera</strong> for å “skanne” og ta et bilde, eller <strong>Last opp</strong> fra galleriet. Vi foreslår arter; åpne Google/Wikipedia for å sjekke.</p>
+      <div class="tabs">
+        <div class="tab active" id="tabCam">📷 Kamera</div>
+        <div class="tab" id="tabUpload">🖼️ Last opp</div>
+      </div>
     </section>
 
-    <div class="card" style="margin-top:16px">
-      <h2>📷 Last opp bilde</h2>
+    <div class="card" id="camCard">
+      <div class="grid2">
+        <div class="frame">
+          <video id="video" playsinline muted></video>
+          <canvas id="canvas" style="display:none"></canvas>
+          <div class="overlay"></div>
+        </div>
+        <div>
+          <div class="row">
+            <button class="btn" id="startCam">Start kamera</button>
+            <button class="btn-ghost" id="snap" disabled>📸 Ta bilde</button>
+            <button class="btn-ghost" id="retake" disabled>🔁 Ta på nytt</button>
+          </div>
+          <div class="divider"></div>
+          <div class="row">
+            <button class="btn" id="identifyFromCanvas" disabled>🔎 Identifiser</button>
+          </div>
+          <p class="muted">Tips: Godt lys, fyll rammen med blomsten.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="uploadCard" style="display:none">
       <div class="row">
         <input id="photo" type="file" accept="image/*" capture="environment">
         <button id="idFlower" class="btn">🔎 Identifiser</button>
         <button id="clearFlower" class="btn-ghost">Nullstill</button>
       </div>
-      <div id="flowerPreview" class="imgbox" style="margin-top:10px;display:none">
-        <img id="flowerImg" class="preview" alt="Forhåndsvisning">
+      <div class="frame" id="uploadPreview" style="display:none; margin-top:10px">
+        <img id="uploadedImg" alt="Forhåndsvisning">
       </div>
     </div>
 
     <div id="flowerResult" style="margin-top:12px"></div>
-
     <div class="toast" id="toast">Melding</div>
   </div>
 
   <script>
     const WORKER_FLOWER = 'https://YOUR-WORKER-DOMAIN/api/identify-flower';
 
-    /* helpers */
     const $ = s => document.querySelector(s);
     const toast = (m,ms=2200)=>{ const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',ms); };
 
-    /* preview */
-    const fileInput = $('#photo'), imgBox = $('#flowerPreview'), imgEl = $('#flowerImg');
+    /* Tabs */
+    const tabCam = $('#tabCam'), tabUpload = $('#tabUpload');
+    const camCard = $('#camCard'), uploadCard = $('#uploadCard');
+    tabCam.addEventListener('click', ()=>{ tabCam.classList.add('active'); tabUpload.classList.remove('active'); camCard.style.display='block'; uploadCard.style.display='none'; });
+    tabUpload.addEventListener('click', ()=>{ tabUpload.classList.add('active'); tabCam.classList.remove('active'); camCard.style.display='none'; uploadCard.style.display='block'; });
+
+    /* Camera scan (capture one frame) */
+    const video = $('#video'), canvas = $('#canvas');
+    const btnStart = $('#startCam'), btnSnap = $('#snap'), btnRetake = $('#retake'), btnIdentifyCanvas = $('#identifyFromCanvas');
+    let stream=null, captured=false;
+
+    async function startCamera(){
+      try{
+        if(stream){ stopCamera(); }
+        stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' }, audio:false });
+        video.srcObject = stream; await video.play();
+        btnSnap.disabled=false; btnRetake.disabled=true; btnIdentifyCanvas.disabled=true;
+        captured=false;
+      }catch(e){
+        toast('Kamera nektet (sjekk tillatelser og https).');
+      }
+    }
+    function stopCamera(){
+      if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+      video.srcObject=null;
+    }
+    btnStart.addEventListener('click', startCamera);
+
+    btnSnap.addEventListener('click', ()=>{
+      if(!video.videoWidth){ toast('Kamera ikke klart'); return; }
+      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      captured = true;
+      btnIdentifyCanvas.disabled=false; btnRetake.disabled=false; btnSnap.disabled=true;
+      // Pause preview so user sees the frozen frame
+      video.pause();
+    });
+
+    btnRetake.addEventListener('click', ()=>{
+      if(video.srcObject){ video.play(); }
+      captured=false; btnIdentifyCanvas.disabled=true; btnRetake.disabled=true; btnSnap.disabled=false;
+    });
+
+    async function canvasToBase64(){
+      return canvas.toDataURL('image/jpeg', 0.92).split(',')[1] || '';
+    }
+
+    btnIdentifyCanvas.addEventListener('click', async ()=>{
+      if(!captured){ toast('Ta et bilde først'); return; }
+      await identify(await canvasToBase64());
+    });
+
+    /* Upload flow */
+    const fileInput = $('#photo'), imgBox = $('#uploadPreview'), imgEl = $('#uploadedImg');
     fileInput.addEventListener('change', ()=>{
       const f = fileInput.files?.[0];
       if(!f){ imgBox.style.display='none'; imgEl.src=''; return; }
       const url = URL.createObjectURL(f);
       imgEl.src = url; imgBox.style.display='flex';
     });
-
-    /* identify */
     $('#idFlower').addEventListener('click', async ()=>{
       const f = fileInput.files?.[0];
       if(!f){ toast('Velg et bilde først'); return; }
-      const area = $('#flowerResult');
-      area.innerHTML = '<div class="offer"><div>⏳ Laster …</div><div></div></div>';
-      try{
-        const base64 = await toBase64(f);
-        const r = await fetch(WORKER_FLOWER, {
-          method: 'POST',
-          headers: { 'content-type':'application/json' },
-          body: JSON.stringify({ image_base64: base64 })
-        });
-        const j = await r.json();
-        renderFlower(j);
-      }catch(e){ area.innerHTML = `<div class="offer"><div>Feil: ${e.message}</div></div>`; }
+      const base64 = await toBase64(f);
+      await identify(base64);
     });
-
     $('#clearFlower').addEventListener('click', ()=>{
       fileInput.value=''; imgBox.style.display='none'; imgEl.src=''; $('#flowerResult').innerHTML='';
     });
-
     function toBase64(file){
       return new Promise((res,rej)=>{
         const reader=new FileReader();
@@ -125,10 +202,22 @@
       });
     }
 
+    /* Call Worker + render */
+    async function identify(base64){
+      const area = $('#flowerResult');
+      area.innerHTML = '<div class="card"><div class="offer"><div>⏳ Laster …</div><div></div></div></div>';
+      try{
+        const r = await fetch(WORKER_FLOWER, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({ image_base64: base64 }) });
+        const j = await r.json();
+        renderFlower(j);
+      }catch(e){
+        area.innerHTML = `<div class="card"><div class="offer">Feil: ${e.message}</div></div>`;
+      }
+    }
+
     function renderFlower(data){
       const area = $('#flowerResult');
-      if(!data?.ok){ area.innerHTML = `<div class="offer">Fant ikke nok info.</div>`; return; }
-
+      if(!data?.ok){ area.innerHTML = `<div class="card"><div class="offer">Fant ikke nok info.</div></div>`; return; }
       const best = data.best || {};
       const title = best.name || 'Ukjent blomst';
       const prob = typeof best.confidence === 'number' ? `${Math.round(best.confidence*100)}%` : '–';
@@ -136,19 +225,17 @@
       const alts = (data.alternatives||[]).slice(0,4).map(x=>`
         <div class="offer"><div>${x.name}</div><div>${Math.round(x.confidence*100)}%</div></div>
       `).join('');
-
       const links = [
         {name:'Google Bilder', url:`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(title)}`},
         {name:'Wikipedia', url:`https://no.wikipedia.org/wiki/${encodeURIComponent(title.replace(/\s+/g,'_'))}`}
       ].map(s=>`<a class="offer" target="_blank" rel="noopener" href="${s.url}">
           <div><strong>${s.name}</strong></div><div>Åpne →</div>
         </a>`).join('');
-
       area.innerHTML = `
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div><strong>${title}</strong> <span class="chip">Sikkerhet: ${prob}</span></div>
-            <div class="muted">Kilde: ${source}</div>
+            <div class="chip">Kilde: ${source}</div>
           </div>
           <div class="divider"></div>
           ${alts || '<div class="muted">Ingen alternativer</div>'}
@@ -156,6 +243,10 @@
           ${links}
         </div>`;
     }
+
+    // iPhone tip: prompt camera permission early if needed
+    document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible' && video.srcObject){ video.play(); }});
+    window.addEventListener('beforeunload', stopCamera);
   </script>
 </body>
 </html>
