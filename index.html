@@ -3,141 +3,159 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Scan & Buy — Redningsmodus</title>
+  <title>Finder — Blomster</title>
+  <meta name="color-scheme" content="light dark">
   <style>
-    :root{--bg:#f6f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--brand:#1C5D99;--line:#e5e7eb}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    .wrap{max-width:860px;margin:0 auto;padding:18px}
-    h1{margin:8px 0 4px} .muted{color:var(--muted)}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+    :root{
+      --bg:#0b1220; --bg2:#0e1a30; --panel:#111c31cc; --ink:#e6e8ef; --muted:#9aa7bf; --line:#20304b;
+      --grad1:#22d3ee; --grad2:#6366f1; --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.45)
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f6f7fb; --bg2:#eef2ff; --panel:#ffffffcc; --ink:#0f172a; --muted:#667085; --line:#e6e8ef; --shadow:0 12px 30px rgba(16,24,40,.10) }
+    }
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--ink);
+      background: radial-gradient(1200px 600px at 80% -10%, #70b8ff22, transparent 60%),
+                  radial-gradient(950px 520px at 0% -10%, #a78bfa22, transparent 55%),
+                  linear-gradient(180deg, var(--bg), var(--bg2));
+      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Arial;}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:820px;margin:0 auto;padding:20px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:36px;height:36px;border-radius:10px;background:radial-gradient(circle at 30% 30%, var(--grad1), var(--grad2));
+      box-shadow:0 6px 20px rgba(34,211,238,.35), inset 0 0 18px #ffffff33; display:flex;align-items:center;justify-content:center;font-weight:800;color:#001}
+    .hero{border:1px solid var(--line);border-radius:22px;background:
+      radial-gradient(600px 280px at 85% -10%, #93c5fd33, transparent 60%),
+      linear-gradient(135deg, #101c33 0%, #0f1a2f 60%, #0e182b 100%);padding:24px;box-shadow:var(--shadow)}
+    @media (prefers-color-scheme: light){.hero{background:
+      radial-gradient(700px 300px at 85% -10%, #93c5fd55, transparent 60%),
+      linear-gradient(135deg, #f1f5ff 0%, #f7f9ff 50%, #ffffff 100%)}}
+    .badge{display:inline-flex;gap:8px;align-items:center;font-size:12px;padding:6px 10px;border-radius:999px;background:#ffffff22;border:1px solid var(--line);backdrop-filter:blur(8px)}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+    h1{margin:0 0 6px} h2{margin:6px 0 10px;font-size:20px}
+    .muted{color:var(--muted);font-size:14px}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    input{flex:1;min-width:220px;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:16px}
-    button{padding:12px 16px;border:0;border-radius:10px;background:var(--brand);color:#fff;font-size:16px}
-    .btn-ghost{background:#e9f2fb;color:#0b2545}
-    .offer{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}
-    .chip{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+    input[type=file]{flex:1;min-width:220px;padding:10px;border:1px dashed var(--line);border-radius:12px;background:transparent;color:var(--ink)}
+    button{border:0;border-radius:12px;padding:12px 16px;font-size:16px;cursor:pointer}
+    .btn{background:linear-gradient(135deg,var(--grad1),var(--grad2));color:#fff;box-shadow:0 8px 22px rgba(99,102,241,.35)}
+    .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+    .offer{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#0f1b2c55,transparent)}
+    @media (prefers-color-scheme: light){.offer{background:#ffffffaa}}
     .divider{height:1px;background:var(--line);margin:10px 0}
-    .error{background:#fee2e2;border:1px solid #fecaca;color:#7f1d1d;padding:10px;border-radius:10px}
+    .imgbox{display:flex;align-items:center;justify-content:center;min-height:220px;border:1px solid var(--line);border-radius:12px;background:#00000022;overflow:hidden}
+    .preview{max-width:100%;max-height:360px;object-fit:contain}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111827ee;color:#fff;padding:10px 14px;border-radius:12px;font-size:14px;display:none;z-index:9999}
+    .chip{display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>🔧 Scan & Buy — Redningsmodus</h1>
-    <p class="muted">Hvis du ser dette, fungerer UI-en. Kamera er midlertidig av. Skriv inn strekkode eller bil for å teste.</p>
+    <div class="top">
+      <div class="brand"><div class="logo">F</div><strong>Finder</strong></div>
+      <div class="badge">🌸 Blomster</div>
+    </div>
 
-    <div class="card">
-      <h3>1) Varer (strekkode, EAN/GTIN)</h3>
+    <section class="hero">
+      <h1>Identifiser en blomst</h1>
+      <p class="muted">Ta et klart bilde i godt lys. Vi foreslår arter, og du kan åpne Google/Wikipedia for å sjekke.</p>
+    </section>
+
+    <div class="card" style="margin-top:16px">
+      <h2>📷 Last opp bilde</h2>
       <div class="row">
-        <input id="ean" placeholder="F.eks. 7310865004703"/>
-        <button id="eanBtn">Hent info</button>
+        <input id="photo" type="file" accept="image/*" capture="environment">
+        <button id="idFlower" class="btn">🔎 Identifiser</button>
+        <button id="clearFlower" class="btn-ghost">Nullstill</button>
       </div>
-      <div id="productArea" style="margin-top:10px"></div>
+      <div id="flowerPreview" class="imgbox" style="margin-top:10px;display:none">
+        <img id="flowerImg" class="preview" alt="Forhåndsvisning">
+      </div>
     </div>
 
-    <div class="card">
-      <h3>2) Bil (skilt / VIN)</h3>
-      <div class="row">
-        <input id="car" placeholder="AB12345 eller 17-tegn VIN"/>
-        <button id="carBtn" class="btn-ghost">Søk</button>
-      </div>
-      <div id="carArea" style="margin-top:10px"></div>
-    </div>
+    <div id="flowerResult" style="margin-top:12px"></div>
 
-    <div class="card">
-      <h3>Status</h3>
-      <div id="status" class="muted">Klar</div>
-    </div>
+    <div class="toast" id="toast">Melding</div>
   </div>
 
   <script>
-    const WORKER_URL = 'https://finder-api.fwh479zypd.workers.dev/api/price'; // <-- CHANGE THIS
+    const WORKER_FLOWER = 'https://YOUR-WORKER-DOMAIN/api/identify-flower';
 
-    function shops(q){
-      const e = encodeURIComponent(q);
-      return [
-        {name:'Google Shopping', url:`https://www.google.com/search?tbm=shop&q=${e}`},
-        {name:'Elkjøp', url:`https://www.elkjop.no/search?q=${e}`},
-        {name:'Power', url:`https://www.power.no/search/?q=${e}`},
-        {name:'Komplett', url:`https://www.komplett.no/search?q=${e}`},
-        {name:'Obs', url:`https://nettbutikk.coop.no/sok?q=${e}`},
-        {name:'Prisjakt', url:`https://www.prisjakt.no/s?k=${e}`}
-      ];
-    }
+    /* helpers */
+    const $ = s => document.querySelector(s);
+    const toast = (m,ms=2200)=>{ const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',ms); };
 
-    function setStatus(msg, isErr=false){
-      const box = document.getElementById('status');
-      box.className = isErr ? 'error' : 'muted';
-      box.textContent = msg;
-    }
+    /* preview */
+    const fileInput = $('#photo'), imgBox = $('#flowerPreview'), imgEl = $('#flowerImg');
+    fileInput.addEventListener('change', ()=>{
+      const f = fileInput.files?.[0];
+      if(!f){ imgBox.style.display='none'; imgEl.src=''; return; }
+      const url = URL.createObjectURL(f);
+      imgEl.src = url; imgBox.style.display='flex';
+    });
 
-    async function fetchPrice(ean){
-      setStatus('Henter fra Worker…');
+    /* identify */
+    $('#idFlower').addEventListener('click', async ()=>{
+      const f = fileInput.files?.[0];
+      if(!f){ toast('Velg et bilde først'); return; }
+      const area = $('#flowerResult');
+      area.innerHTML = '<div class="offer"><div>⏳ Laster …</div><div></div></div>';
       try{
-        const r = await fetch(`${WORKER_URL}?ean=${encodeURIComponent(ean)}`);
-        if(!r.ok) throw new Error('HTTP '+r.status);
-        const data = await r.json();
-        setStatus('Ferdig. Viste resultat under.');
-        renderProduct(data, ean);
-      }catch(err){
-        setStatus('Feil: '+err.message, true);
-      }
+        const base64 = await toBase64(f);
+        const r = await fetch(WORKER_FLOWER, {
+          method: 'POST',
+          headers: { 'content-type':'application/json' },
+          body: JSON.stringify({ image_base64: base64 })
+        });
+        const j = await r.json();
+        renderFlower(j);
+      }catch(e){ area.innerHTML = `<div class="offer"><div>Feil: ${e.message}</div></div>`; }
+    });
+
+    $('#clearFlower').addEventListener('click', ()=>{
+      fileInput.value=''; imgBox.style.display='none'; imgEl.src=''; $('#flowerResult').innerHTML='';
+    });
+
+    function toBase64(file){
+      return new Promise((res,rej)=>{
+        const reader=new FileReader();
+        reader.onload = ()=> res(String(reader.result).split(',')[1]||'');
+        reader.onerror = rej;
+        reader.readAsDataURL(file);
+      });
     }
 
-    function renderProduct(apiData, barcode){
-      const area = document.getElementById('productArea');
-      const p = apiData.product || {};
-      const title = p.title || 'Uten navn';
-      const brand = p.brand || '';
-      const img = p.image || '';
-      const offers = (apiData.offers||[]).slice().sort((a,b)=>(a.price??1e12)-(b.price??1e12));
-      const links = apiData.links || shops([brand,title].filter(Boolean).join(' ')||barcode);
-      const priceList = offers.length ? offers.map(o=>`
-        <a class="offer" target="_blank" rel="noopener" href="${o.url}">
-          <div><strong>${o.merchant}</strong></div>
-          <div><strong>${(o.price).toLocaleString('no-NO')} ${o.currency||'NOK'}</strong></div>
-        </a>`).join('') : '<div class="muted">Ingen direkte priser ennå.</div>';
-      const linkList = links.map(s=>`
-        <a class="offer" target="_blank" rel="noopener" href="${s.url}">
+    function renderFlower(data){
+      const area = $('#flowerResult');
+      if(!data?.ok){ area.innerHTML = `<div class="offer">Fant ikke nok info.</div>`; return; }
+
+      const best = data.best || {};
+      const title = best.name || 'Ukjent blomst';
+      const prob = typeof best.confidence === 'number' ? `${Math.round(best.confidence*100)}%` : '–';
+      const source = data.source || (data.demo ? 'demo' : 'ukjent');
+      const alts = (data.alternatives||[]).slice(0,4).map(x=>`
+        <div class="offer"><div>${x.name}</div><div>${Math.round(x.confidence*100)}%</div></div>
+      `).join('');
+
+      const links = [
+        {name:'Google Bilder', url:`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(title)}`},
+        {name:'Wikipedia', url:`https://no.wikipedia.org/wiki/${encodeURIComponent(title.replace(/\s+/g,'_'))}`}
+      ].map(s=>`<a class="offer" target="_blank" rel="noopener" href="${s.url}">
           <div><strong>${s.name}</strong></div><div>Åpne →</div>
         </a>`).join('');
+
       area.innerHTML = `
         <div class="card">
-          <div><strong>${title}</strong> ${brand?`<span class="chip">Merke: ${brand}</span>`:''}</div>
-          <div class="muted">Strekkode: ${barcode}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>${title}</strong> <span class="chip">Sikkerhet: ${prob}</span></div>
+            <div class="muted">Kilde: ${source}</div>
+          </div>
           <div class="divider"></div>
-          <div><strong>Priser</strong></div>
-          ${priceList}
+          ${alts || '<div class="muted">Ingen alternativer</div>'}
           <div class="divider"></div>
-          <div><strong>Butikker (åpne for dagens pris)</strong></div>
-          ${linkList}
-          ${img?`<div class="divider"></div><img alt="Produkt" src="${img}" style="max-width:100%; border-radius:10px; border:1px solid var(--line)"/>`:''}
+          ${links}
         </div>`;
     }
-
-    function renderCar(query){
-      const q = (query||'').trim().toUpperCase();
-      const area = document.getElementById('carArea');
-      if(!q){ area.innerHTML=''; return; }
-      const cards = [
-        {name:'FINN biler', url:`https://www.finn.no/car/used/search.html?q=${encodeURIComponent(q)}`},
-        {name:'Google bilsøk', url:`https://www.google.com/search?q=${encodeURIComponent(q+' bruktbil pris')}`},
-        {name:'Autodb', url:`https://www.autodb.no/search?query=${encodeURIComponent(q)}`}
-      ].map(s=>`<a class="offer" target="_blank" rel="noopener" href="${s.url}">
-          <div><strong>${s.name}</strong></div><div>Åpne →</div></a>`).join('');
-      area.innerHTML = `<div class="card">${cards}</div>`;
-    }
-
-    document.getElementById('eanBtn').addEventListener('click', ()=>{
-      const v = document.getElementById('ean').value.trim();
-      if(!v){ setStatus('Skriv inn en strekkode', true); return; }
-      fetchPrice(v);
-    });
-    document.getElementById('carBtn').addEventListener('click', ()=>{
-      renderCar(document.getElementById('car').value);
-    });
-
-    // smoke test
-    setStatus('Klar (skriv inn 7310865004703 for test)');
   </script>
 </body>
 </html>
