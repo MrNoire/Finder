@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Scan & Buy — Norge</title>
+  <style>
+    :root { --bg:#f6f7fb; --card:#fff; --ink:#0f172a; --muted:#64748b; --brand:#1C5D99; --line:#e6e8ef; }
+    *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:860px;margin:0 auto;padding:20px}
+    header{display:flex;gap:12px;align-items:center}
+    header h1{font-size:22px;margin:0}
+    header small{color:var(--muted)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .col{display:flex;flex-direction:column;gap:10px}
+    button{border:0;background:var(--brand);color:#fff;border-radius:12px;padding:12px 16px;font-size:16px;cursor:pointer}
+    .btn-ghost{background:#e9f2fb;color:#0b2545}
+    .btn-outline{background:#fff;border:1px solid var(--line);color:#0b2545}
+    input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:16px}
+    video{width:100%;border-radius:12px;background:#000}
+    .muted{color:var(--muted);font-size:14px}
+    .offers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:640px){.offers{grid-template-columns:1fr}}
+    .offer{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center}
+    .chip{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+    .section-title{font-weight:600;margin:8px 0 4px}
+    a{color:var(--brand);text-decoration:none}
+    .imgbox{width:100%;max-height:220px;display:flex;align-items:center;justify-content:center;background:#fafbff;border:1px dashed var(--line);border-radius:12px;overflow:hidden}
+    .imgbox img{max-height:220px;max-width:100%;object-fit:contain}
+    .divider{height:1px;background:var(--line);margin:10px 0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🔎 Scan & Buy</h1>
+      <small>Skann strekkoder → se produktinfo → klikk til butikker for pris</small>
+    </header>
+
+    <!-- products: barcode -->
+    <div class="card">
+      <h3>1) Varer (strekkode)</h3>
+      <p class="muted">Trykk “Start kamera”, pek på strekkoden. Safari/Chrome spør om lov til å bruke kameraet (si ja). Siden må være https (GitHub Pages er https 👍).</p>
+      <div class="row">
+        <button id="startScan">📷 Start kamera</button>
+        <button id="stopScan" class="btn-ghost" disabled>⛔ Stopp</button>
+        <button id="typeCode" class="btn-outline">⌨️ Skriv inn strekkode</button>
+      </div>
+      <div id="manualBox" class="row" style="display:none;margin-top:8px">
+        <input id="codeInput" placeholder="Skriv EAN/GTIN (f.eks. 7310865004703)"/>
+        <button id="codeGo" class="btn-ghost">Søk</button>
+      </div>
+      <video id="preview" playsinline muted></video>
+
+      <div id="productArea" style="margin-top:12px"></div>
+    </div>
+
+    <!-- cars: plate or VIN -->
+    <div class="card">
+      <h3>2) Bil (skilt / VIN)</h3>
+      <p class="muted">Skriv inn registreringsnummer (AB12345) eller VIN (17 tegn). Vi viser “live” søkerknapper til markedsplasser (du ser dagens pris der).</p>
+      <div class="row">
+        <input id="carInput" placeholder="AB12345 eller WVWZZZ1KZHW000001"/>
+        <button id="carSearch">🔎 Søk</button>
+      </div>
+      <div id="carArea" style="margin-top:12px"></div>
+    </div>
+
+    <p class="muted">📌 Nå: ekte (live) produktdata fra Open Food Facts. Priser/ladede tilbud krever butikk-avtaler eller en liten “sky-hjelper” (kan legge til når du vil).</p>
+  </div>
+
+  <!-- ZXing fallback for browsers without BarcodeDetector -->
+  <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
+  <script>
+    // ============ SIMPLE HELPERS ============
+    const $ = sel => document.querySelector(sel);
+    const byId = id => document.getElementById(id);
+    const NOK = n => (typeof n==='number'? n.toLocaleString('no-NO'): n) + ' NOK';
+
+    const looksLikeVin = s => /^[A-HJ-NPR-Z0-9]{17}$/.test((s||'').trim().toUpperCase());
+    const looksLikeNorPlate = s => /^[A-Z]{2}\d{4,5}$/.test((s||'').trim().toUpperCase().replace(/\s+/g,''));
+
+    function shopLinks(query){
+      const q = encodeURIComponent(query);
+      return [
+        {name:'Google Shopping', url:`https://www.google.com/search?tbm=shop&q=${q}`},
+        {name:'Elkjøp', url:`https://www.elkjop.no/search?q=${q}`},
+        {name:'Power', url:`https://www.power.no/search/?q=${q}`},
+        {name:'Komplett', url:`https://www.komplett.no/search?q=${q}`},
+        {name:'Obs', url:`https://nettbutikk.coop.no/sok?q=${q}`},
+        {name:'Prisjakt', url:`https://www.prisjakt.no/s?k=${q}`},
+      ];
+    }
+
+    // ============ PRODUCT RENDER ============
+    function renderProductCard(data, barcode){
+      const area = byId('productArea');
+      if (!data || data.status !== 1){
+        area.innerHTML = `<div class="card"><div>Fant ikke produkt for strekkode <strong>${barcode}</strong>.</div>
+          <div class="muted">Tips: Prøv på nytt, eller søk i butikker under.</div></div>`;
+        return;
+      }
+      const p = data.product || {};
+      const title = p.product_name || p.generic_name || 'Uten navn';
+      const brand = p.brands || '';
+      const img = p.image_front_url || p.image_url || '';
+      const query = [brand, title].filter(Boolean).join(' ');
+      const shops = shopLinks(query || barcode);
+
+      area.innerHTML = `
+        <div class="card">
+          <div class="row" style="align-items:flex-start">
+            <div class="col" style="flex:2">
+              <div class="section-title">${title}</div>
+              ${brand? `<div class="chip">Merke: ${brand}</div>`:''}
+              <div class="muted" style="margin-top:6px">Strekkode: ${barcode}</div>
+              <div class="divider"></div>
+              <div class="section-title">Butikker (klikk for dagens pris)</div>
+              <div class="offers">
+                ${shops.map(s=>`
+                  <a class="offer" href="${s.url}" target="_blank" rel="noopener">
+                    <div><strong>${s.name}</strong></div>
+                    <div>Åpne →</div>
+                  </a>`).join('')}
+              </div>
+              <div class="divider"></div>
+              <div class="muted">Kilde: Open Food Facts (live). Pris vises på butikk-siden.</div>
+            </div>
+            <div class="col" style="flex:1">
+              <div class="imgbox">
+                ${img? `<img src="${img}" alt="Produktbilde"/>` : '<div class="muted">Ingen bilde</div>'}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ============ CAR RENDER ============
+    function renderCarCard(input){
+      const q = (input||'').trim().toUpperCase();
+      const area = byId('carArea');
+      if (!q){
+        area.innerHTML = '';
+        return;
+      }
+      // quick “understand you” message
+      const tag = looksLikeVin(q) ? 'VIN ✔' : (looksLikeNorPlate(q) ? 'Norsk regnr ✔' : 'Ukjent format (går fint)');
+      const shops = [
+        {name:'FINN biler', url:`https://www.finn.no/car/used/search.html?q=${encodeURIComponent(q)}`},
+        {name:'Google bilsøk', url:`https://www.google.com/search?q=${encodeURIComponent(q+' bruktbil pris')}`},
+        {name:'Autodb', url:`https://www.autodb.no/search?query=${encodeURIComponent(q)}`}
+      ];
+      area.innerHTML = `
+        <div class="card">
+          <div class="section-title">Søk etter bil</div>
+          <div class="muted">Du skrev: <strong>${q}</strong> • <span class="chip">${tag}</span></div>
+          <div class="divider"></div>
+          <div class="section-title">Markedsplasser (live priser)</div>
+          <div class="offers">
+            ${shops.map(s=>`
+              <a class="offer" href="${s.url}" target="_blank" rel="noopener">
+                <div><strong>${s.name}</strong></div><div>Åpne →</div>
+              </a>`).join('')}
+          </div>
+          <div class="divider"></div>
+          <div class="muted">Tips: For nøyaktige data (modell, år, km) trenger vi en liten “sky-hjelper” eller partner-API. Vi legger til det når du sier klar.</div>
+        </div>`;
+    }
+
+    // ============ BARCODE SCANNING ============
+    const startBtn = byId('startScan');
+    const stopBtn  = byId('stopScan');
+    const typeBtn  = byId('typeCode');
+    const manualBox= byId('manualBox');
+    const codeInput= byId('codeInput');
+    const codeGo   = byId('codeGo');
+    const video    = byId('preview');
+
+    let stream=null, scanning=false, zxingTimer=null;
+
+    async function stopCamera(){
+      scanning=false;
+      if (zxingTimer){ clearInterval(zxingTimer); zxingTimer=null; }
+      if (stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+      video.srcObject=null; stopBtn.disabled=true;
+    }
+    async function startCamera(){
+      await stopCamera();
+      try{
+        stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+        video.srcObject=stream; await video.play(); stopBtn.disabled=false;
+      }catch(e){ alert('Kunne ikke åpne kamera. Sjekk tillatelse og https.'); }
+    }
+
+    async function fetchOFF(barcode){
+      try{
+        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${encodeURIComponent(barcode)}.json`);
+        const data = await res.json();
+        renderProductCard(data, barcode);
+      }catch(e){
+        byId('productArea').innerHTML = '<div class="card">Feil ved henting av data.</div>';
+      }
+    }
+
+    async function scanWithBarcodeDetector(){
+      if (!('BarcodeDetector' in window)) return false;
+      const detector = new window.BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
+      scanning=true;
+      const tick = async ()=>{
+        if (!scanning) return;
+        try{
+          const codes = await detector.detect(video);
+          if (codes && codes.length){
+            const raw = codes[0].rawValue||'';
+            if (raw){
+              scanning=false; await stopCamera(); await fetchOFF(raw); return;
+            }
+          }
+        }catch(_){}
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      return true;
+    }
+
+    async function scanWithZXing(){
+      const canvas=document.createElement('canvas'); const ctx=canvas.getContext('2d');
+      scanning=true;
+      zxingTimer=setInterval(async ()=>{
+        if (!scanning || !video.videoWidth) return;
+        canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+        ctx.drawImage(video,0,0,canvas.width,canvas.height);
+        try{
+          const src = new ZXing.HTMLCanvasElementLuminanceSource(canvas);
+          const bitmap = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(src));
+          const result = ZXing.BrowserMultiFormatReader.decodeBitmap(bitmap);
+          const text = result && result.getText ? result.getText() : null;
+          if (text){
+            scanning=false; await stopCamera(); await fetchOFF(text);
+          }
+        }catch(_e){ /* keep trying */ }
+      }, 250);
+    }
+
+    startBtn.addEventListener('click', async ()=>{
+      await startCamera();
+      const ok = await scanWithBarcodeDetector();
+      if (!ok) await scanWithZXing();
+    });
+    stopBtn.addEventListener('click', stopCamera);
+    typeBtn.addEventListener('click', ()=>{ manualBox.style.display = manualBox.style.display==='none'?'flex':'none'; });
+    codeGo.addEventListener('click', ()=>{ const c=codeInput.value.trim(); if(c){ fetchOFF(c); } });
+
+    // ============ CAR SEARCH ============
+    byId('carSearch').addEventListener('click', ()=>{
+      const q = byId('carInput').value;
+      renderCarCard(q);
+    });
+  </script>
+</body>
+</html>
