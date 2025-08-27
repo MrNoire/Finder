@@ -356,14 +356,18 @@
     }
 
     async function fetchOFF(barcode){
-      $('#placeholder').style.display='block';
-      try{
-        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${encodeURIComponent(barcode)}.json`);
-        const data = await res.json();
-        renderProduct(data, barcode);
-      }catch(e){
-        $('#placeholder').style.display='none';
-        toast('Feil ved henting av data');
+  const WORKER = 'https://finder-api.fwh479zypd.workers.dev'; // <-- your Worker URL
+  document.getElementById('placeholder').style.display='block';
+  try{
+    const r = await fetch(`${WORKER}?ean=${encodeURIComponent(barcode)}`);
+    const data = await r.json();
+    document.getElementById('placeholder').style.display='none';
+    renderProductWithOffers(data, barcode);
+  }catch(e){
+    document.getElementById('placeholder').style.display='none';
+    alert('Feil ved henting av priser.');
+  }
+}
       }
     }
 
